@@ -24,13 +24,28 @@ local function val2str(val, result, indent, skipLongStr, threshold, newline)
     elseif "table" == t then
         result[i+1] = "{\n"
         i = #result
+        local newindent = indent .. "    "
+
+        --for beauty, we save the table members and print them 
+        --at last
+        local table_members = {}
         for k,v in pairs(val) do
-            local newindent = indent .. "    "
-            result[i+1] = newindent .. tostring(k)                -- key
-            result[i+2] = " = "                                   -- =
+            if "table" == type(v) then
+                table_members[k] = v
+            else
+                result[i+1] = newindent .. tostring(k) .. "="
+                val2str(v, result, newindent, skipLongStr, threshold, true) -- value
+                i = #result
+            end
+        end
+
+        --print the table members
+        for k,v in pairs(table_members) do
+            result[i+1] = newindent .. tostring(k) .. "="
             val2str(v, result, newindent, skipLongStr, threshold, true) -- value
             i = #result
         end
+
         result[i+1] = indent .. "}"
     else 
         assert(false)
