@@ -35,6 +35,57 @@ local function get_canonicalized_resource(self, s3Req)
 
     result = result .. s3Req.httpReq.uri
 
+    --add subresources and query string parameters overriding response headers
+    local params = {"?"}
+    local index = 1
+
+    --subresources
+    for i,r in ipairs(config.SUB_RESOURCES) do
+        if s3Req.httpReq.args[r] == true then
+            params[index+1] = r
+            params[index+2] = "&" 
+            index = index + 2
+            s3Req:add_subresource(r, true)
+        elseif s3Req.httpReq.args[r] == "" then
+            params[index+1] = r .. "="
+            params[index+2] = "&" 
+            index = index + 2
+            s3Req:add_subresource(r, "")
+        elseif s3Req.httpReq.args[r] then
+            params[index+1] = r .. "=" .. s3Req.httpReq.args[r]
+            params[index+2] = "&" 
+            index = index + 2
+            s3Req:add_subresource(r, s3Req.httpReq.args[r])
+        end
+    end
+
+    --query string parameters overriding response headers
+    for i,r in ipairs(config.OVERRIDING_PARAMS) do
+        if s3Req.httpReq.args[r] then
+            params[index+1] = r .. "=" .. s3Req.httpReq.args[r]
+            params[index+2] = "&" 
+            index = index + 2
+            s3Req:add_overridingparam(r, s3Req.httpReq.args[r])
+        end
+    end
+
+    if s3Req.httpReq.method == config.HTTP_METHOD.DELETE then
+        local delet_params = s3Req.httpReq.args["delete"] 
+        if delet_params then
+            params[index+1] = "delete=" .. delet_params
+            index = index + 1
+        end
+    end
+
+    local c = #params
+    if c > 1 then  --besides "?", there are more elements
+        if params[c] == "&"  then
+            table.remove(params, c)
+        end
+        local params_str = table.concat(params)
+        result = result .. params_str
+    end
+
     ngx.log(ngx.DEBUG, "ReqID=", s3Req.reqid, " canonicalized_resource=", result)
 
     return result

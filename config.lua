@@ -25,6 +25,15 @@ _M.AWS_VERSION =
     AWS4 = 4,
 }
 
+_M.HTTP_METHOD = 
+{
+    GET = "GET",
+    HEAD = "HEAD",
+    PUT = "PUT",
+    POST = "POST",
+    DELETE = "DELETE",
+}
+
 _M.AUTH_METHOD = 
 {
     HEADERS = 1,
@@ -44,8 +53,33 @@ _M.PAYLOAD_SHA256_OPT =
     MULTI_CHUNKS          = 3,
 }
 
-_M.SUBRESOURCES = 
+_M.SUB_RESOURCES =   --lexicographically sorted
 {
+    "acl", 
+    "lifecycle", 
+    "location", 
+    "logging", 
+    "notification", 
+    "partNumber", 
+    "policy", 
+    "requestPayment", 
+    "torrent", 
+    "uploadId", 
+    "uploads", 
+    "versionId", 
+    "versioning", 
+    "versions", 
+    "website",
+}
+
+_M.OVERRIDING_PARAMS =  -- sort lexicographically or keep the order ??????
+{
+    "response-cache-control", 
+    "response-content-disposition", 
+    "response-content-encoding",
+    "response-content-language", 
+    "response-content-type", 
+    "response-expires", 
 }
 
 return _M

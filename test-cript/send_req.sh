@@ -4,20 +4,20 @@ dir=`dirname $0`
 . $dir/s3cfg
 
 
-#aw4 args 
+#aw2 args 
 exp=$(date +%s)
 exp=`expr $exp + 86400`
 exp=$(date -d @$exp)
 param="AWSAccessKeyId=${accessid}&Signature=${signature}&Expires=$exp"
 
-curl -v "http://$host:$port/test?$param"
+curl -v "http://$host:$port/test_aws2_args?$param"
 
 
 #aw2 headers 
 curl -v                                                                        \
  -H "Host: ${host}"                                                            \
  -H "Authorization: AWS ${accessid}:${signature}"                              \
- -L -X PUT "http://$host:$port/test"
+ -L -X PUT "http://$host:$port/test_aws2_headers"
 
 
 
@@ -90,7 +90,16 @@ virtual_host=johnsmith.s3.amazonaws.com
 curl -v                                                                        \
  -H "Host: ${virtual_host}"                                                    \
  -H "Authorization: AWS ${accessid}:${signature}"                              \
- -L -X GET "http://$host:$port/dir1/dir2/file?acl&xx=&versionId=1"
+ -L -X GET "http://$host:$port/dir1/dir2/file?acl&policy=&versionId=30&response-content-encoding=gzip"
+
+
+#aw2 virtual hosted-style 
+virtual_host=johnsmith.s3.amazonaws.com
+curl -v                                                                        \
+ -H "Host: ${virtual_host}"                                                    \
+ -H "Authorization: AWS ${accessid}:${signature}"                              \
+ -L -X DELETE "http://$host:$port/?delete=obj1,obj2"
+
 
 
 #aw2 virtual hosted-style 

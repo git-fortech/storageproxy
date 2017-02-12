@@ -14,12 +14,15 @@ _M._VERSION = '0.1'
 function _M.new(self, reqid, httpReq)
     local newobj = 
     {
-        reqid      = reqid,
-        httpReq    = httpReq,
+        reqid             = reqid,
+        httpReq           = httpReq,
 
-        buckstyle  = nil,
-        bucket     = nil,
-        object     = nil,
+        buckstyle         = nil,
+        bucket            = nil,
+        object            = nil,
+
+        subresources      = new_tab(0,6),
+        overridingparams  = new_tab(0,6),
     }
 
     local host = httpReq.headers["host"]
@@ -48,6 +51,14 @@ function _M.new(self, reqid, httpReq)
 
     setmetatable(newobj, {__index = self})
     return newobj
+end
+
+function _M.add_subresource(self, subres, value)
+    self.subresources[subres] = value
+end
+
+function _M.add_overridingparam(self, param, value)
+    self.overridingparams[param] = value
 end
 
 return _M

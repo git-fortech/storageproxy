@@ -14,7 +14,7 @@ function _M.new(self, method, uri, requri, args, headers)
         req_uri      = requri,
         args         = args,
         headers      = headers,
-        body_reader  = nil,
+        bodyreader   = nil,
     }
 
     setmetatable(newobj, {__index = self})
